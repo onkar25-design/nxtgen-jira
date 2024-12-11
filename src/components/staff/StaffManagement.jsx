@@ -374,7 +374,10 @@ const handleRejectStaff = async (staffId) => {
       {isEditModalOpen && (
         <div className="manageStaff-modal-overlay">
           <div className="manageStaff-modal-content">
-            <h3>Edit Staff</h3>
+            <h3>
+              <FiEdit className="h-5 w-5" />
+              Edit Staff
+            </h3>
             <form onSubmit={handleSubmitEditStaff}>
               <div className="form-row">
                 <div className="form-field">
@@ -525,17 +528,22 @@ const handleRejectStaff = async (staffId) => {
       {isViewModalOpen && (
         <div className="manageStaff-modal-overlay">
           <div className="manageStaff-modal-content">
-            <h3>View Staff Details</h3>
-            <p><strong>First Name:</strong> {viewStaffInfo.first_name}</p>
-            <p><strong>Last Name:</strong> {viewStaffInfo.last_name}</p>
-            <p><strong>Email:</strong> {viewStaffInfo.email}</p>
-            <p><strong>Phone:</strong> {viewStaffInfo.phone}</p>
-            <p><strong>Role:</strong> {viewStaffInfo.role}</p>
-            <p><strong>Designation:</strong> {viewStaffInfo.designation}</p>
-            <p><strong>Status:</strong> {viewStaffInfo.status}</p>
-            <p><strong>Address:</strong> {viewStaffInfo.address.street}, {viewStaffInfo.address.city}, {viewStaffInfo.address.state}, {viewStaffInfo.address.country}, {viewStaffInfo.address.zipcode}</p>
+            <h3>
+              <FiEye className="h-5 w-5" />
+              View Staff Details
+            </h3>
+            <div className="staff-details-content">
+              <p><strong>First Name:</strong> {viewStaffInfo.first_name}</p>
+              <p><strong>Last Name:</strong> {viewStaffInfo.last_name}</p>
+              <p><strong>Email:</strong> {viewStaffInfo.email}</p>
+              <p><strong>Phone:</strong> {viewStaffInfo.phone}</p>
+              <p><strong>Role:</strong> {viewStaffInfo.role}</p>
+              <p><strong>Designation:</strong> {viewStaffInfo.designation}</p>
+              <p><strong>Status:</strong> {viewStaffInfo.status}</p>
+              <p><strong>Address:</strong> {viewStaffInfo.address.street}, {viewStaffInfo.address.city}, {viewStaffInfo.address.state}, {viewStaffInfo.address.country}, {viewStaffInfo.address.zipcode}</p>
+            </div>
             <div className="manageStaff-modal-buttons">
-              <button type="button" onClick={() => setIsViewModalOpen(false)}>Close</button>
+              <button type="button" className="cancel-button" onClick={() => setIsViewModalOpen(false)}>Close</button>
             </div>
           </div>
         </div>
