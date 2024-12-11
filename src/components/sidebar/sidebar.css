@@ -1,0 +1,25 @@
+.sidebar {
+  background-color: #1e3a8a; /* Tailwind's bg-blue-900 */
+  color: white;
+  height: 100vh; /* Full height of the viewport */
+  position: fixed; /* Keep it fixed */
+  top: 0; /* Align to the top */
+  left: 0; /* Align to the left */
+  z-index: 50; /* Ensure it stays above other content */
+}
+
+.sidebar-header {
+  padding: 1rem;
+  border-bottom: 1px solid #1e40af; /* Tailwind's border-blue-800 */
+}
+
+.sidebar-button {
+  width: 100%;
+  justify-content: flex-start;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-button:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Lighten on hover */
+}
