@@ -486,6 +486,20 @@ export default function WorkflowBoard({ projectId }) {
     return filteredTasks
   }
 
+  // Add this function to add a new task to the state
+  const addNewTask = (task) => {
+    setTasks(prevTasks => ({
+      ...prevTasks,
+      todo: [...prevTasks.todo, {
+        ...task,
+        dueDate: task.due_date,
+        assignedTo: task.assigned_to,
+        fileLinks: task.file_links || [],
+        color: stageColors[task.stage] || '#E3F2FD'
+      }]
+    }));
+  };
+
   return (
     <div className="h-screen flex flex-col p-4 pt-16 bg-gray-50">
       {/* Flow Chart */}
@@ -615,6 +629,7 @@ export default function WorkflowBoard({ projectId }) {
         <CreateNewTaskForm 
           onClose={() => setShowForm(false)} 
           projectId={projectId}
+          onTaskCreated={addNewTask}
         />
       )}
 

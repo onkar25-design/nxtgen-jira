@@ -3,7 +3,7 @@ import './CreateNewTaskForm.css';
 import { supabase } from '../../../supabaseClient'; // Import the Supabase client
 import { PlusCircle } from 'lucide-react';
 
-const CreateNewTaskForm = ({ onClose, projectId }) => {
+const CreateNewTaskForm = ({ onClose, projectId, onTaskCreated }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('');
@@ -88,6 +88,7 @@ const CreateNewTaskForm = ({ onClose, projectId }) => {
         alert('Failed to create task. Please try again.');
       } else {
         console.log('Task inserted:', data);
+        onTaskCreated(data[0]);
         onClose(); // Close the modal after successful insertion
       }
     } catch (error) {
