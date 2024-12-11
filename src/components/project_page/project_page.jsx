@@ -22,6 +22,8 @@ export default function ProjectsPage({ setCurrentPage, setSelectedProjectId }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [editProject, setEditProject] = useState({ id: null, name: '', description: '' })
   const [showArchived, setShowArchived] = useState(false)
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false)
+  const [viewProject, setViewProject] = useState(null)
 
   // Fetch projects on component mount
   useEffect(() => {
@@ -135,6 +137,11 @@ export default function ProjectsPage({ setCurrentPage, setSelectedProjectId }) {
       toast.error('Failed to update project status');
     }
   };
+
+  const handleViewProject = (project) => {
+    setViewProject(project)
+    setIsViewModalOpen(true)
+  }
 
   // Filter projects based on archived status
   const filteredProjects = projects.filter(project => 
@@ -359,7 +366,9 @@ export default function ProjectsPage({ setCurrentPage, setSelectedProjectId }) {
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex-grow">
-                <p className="text-gray-600 min-h-[60px]">{project.description}</p>
+                <p className="text-gray-600 line-clamp-3">
+                  {project.description}
+                </p>
               </CardContent>
               <CardFooter className="mt-auto">
                 <TooltipProvider>
@@ -370,11 +379,27 @@ export default function ProjectsPage({ setCurrentPage, setSelectedProjectId }) {
                         className="w-full text-blue-600 border-blue-600 hover:bg-blue-50"
                         onClick={() => handleViewDetails(project.id)}
                       >
+                        Go to Project
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Navigate to project workspace</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        className="ml-2 text-gray-600"
+                        onClick={() => handleViewProject(project)}
+                      >
                         View Details
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>View project workflows and details</p>
+                      <p>View complete project details</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -383,6 +408,48 @@ export default function ProjectsPage({ setCurrentPage, setSelectedProjectId }) {
           ))}
         </div>
       </div>
+
+      {isViewModalOpen && viewProject && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
+            <div className="px-6 py-4 bg-blue-600">
+              <h3 className="text-xl font-semibold text-white flex items-center">
+                <Folder className="h-5 w-5 mr-2" />
+                Project Details
+              </h3>
+            </div>
+            
+            <div className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Project Name
+                  </label>
+                  <p className="text-gray-900">{viewProject.name}</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <p className="text-gray-900 modal-description">
+                    {viewProject.description}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setIsViewModalOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
