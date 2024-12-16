@@ -80,6 +80,7 @@ export default function Header({ sidebarOpen, setSidebarOpen, setCurrentPage }) 
             <Button
               variant="ghost"
               className="text-blue-600 hover:text-blue-800 relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-center after:scale-x-0 after:bg-blue-600 after:transition-transform hover:after:scale-x-100 hover:bg-transparent"
+              onClick={() => setCurrentPage('tasks')}
             >
               Tasks
             </Button>

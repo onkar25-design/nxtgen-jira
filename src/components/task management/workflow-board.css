@@ -1,9 +1,17 @@
 .task-card {
     transition: all 0.2s ease;
+    touch-action: pan-y pinch-zoom;
   }
   
   .task-card:hover {
     transform: translateY(-1px);
+  }
+  
+  /* Disable hover effect on touch devices */
+  @media (hover: none) {
+    .task-card:hover {
+      transform: none;
+    }
   }
   
   .expanded-content {
@@ -19,4 +27,42 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+  
+  /* Mobile-specific styles */
+  @media (max-width: 768px) {
+    .task-card {
+      margin-bottom: 8px;
+      touch-action: none;
+    }
+    
+    /* Make the clickable area more prominent */
+    .task-card > div:first-child {
+      min-height: 48px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Prevent text selection on mobile */
+    .task-card {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Add active state feedback */
+    .task-card > div:first-child:active {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Ensure expanded content is clickable */
+    .expanded-content {
+      position: relative;
+      z-index: 2;
+    }
+  }
+  
+  /* Improve animation performance */
+  .expanded-content {
+    animation: slideDown 0.2s ease-out;
+    will-change: transform, opacity;
+    transform-origin: top;
   }

@@ -10,6 +10,7 @@ import StaffManagement from "@/components/staff/StaffManagement";
 import TimelinePage from "@/components/timeline/timeline";
 import { supabase } from '../supabaseClient';
 import ResetPasswordPage from './components/login/ResetPasswordPage';
+import TasksPage from "@/components/task_page/TasksPage";
 
 function App() {
   const [session, setSession] = useState(null);
@@ -92,6 +93,8 @@ function App() {
         return <StaffManagement />;
       case 'timeline':
         return <TimelinePage />;
+      case 'tasks':
+        return <TasksPage />;
       default:
         return <div>Dashboard</div>;
     }

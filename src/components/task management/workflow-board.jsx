@@ -278,6 +278,13 @@ export default function WorkflowBoard({ projectId }) {
     const isExpanded = expandedTaskId === task.id;
     const priorityColor = getPriorityColor(task.priority || 'medium');
 
+    // Add stopPropagation to prevent drag interference
+    const handleCardClick = (e) => {
+      e.preventDefault(); // Prevent default touch events
+      e.stopPropagation(); // Stop event from bubbling up
+      setExpandedTaskId(isExpanded ? null : task.id);
+    };
+
     const handleViewDetails = (e) => {
       e.stopPropagation(); // Prevent expanding/collapsing when clicking the view button
       setSelectedTask(task);
@@ -354,31 +361,44 @@ export default function WorkflowBoard({ projectId }) {
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            className="task-card mb-2 rounded-lg shadow-sm overflow-hidden"
+            className="task-card rounded-lg shadow-sm overflow-hidden touch-manipulation"
             style={{
               backgroundColor: task.color,
               opacity: highlightedStage && highlightedStage !== task.stage ? 0.5 : 1,
               ...provided.draggableProps.style,
             }}
           >
-            {/* Task Header */}
+            {/* Task Header - Add explicit touch handling */}
             <div 
-              className="p-3 cursor-pointer hover:bg-gray-50 flex justify-between items-center"
-              onClick={() => setExpandedTaskId(isExpanded ? null : task.id)}
+              className="p-3 cursor-pointer hover:bg-gray-50 active:bg-gray-100 flex justify-between items-center"
+              onClick={handleCardClick}
+              onTouchEnd={handleCardClick} // Add explicit touch handler
+              role="button"
+              tabIndex={0}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
                 <div 
                   className="w-3 h-3 rounded-full flex-shrink-0"
                   style={{ backgroundColor: priorityColor }}
                 />
-                <span className="font-medium">{task.content}</span>
+                <span className="font-medium truncate">{task.content}</span>
               </div>
-              {isExpanded ? <FiChevronUp /> : <FiChevronDown />}
+              <div className="flex items-center gap-2 ml-2">
+                {task.dueDate && (
+                  <span className="text-xs text-gray-500">
+                    {new Date(task.dueDate).toLocaleDateString()}
+                  </span>
+                )}
+                {isExpanded ? <FiChevronUp /> : <FiChevronDown />}
+              </div>
             </div>
 
-            {/* Expanded Content */}
+            {/* Expanded Content - Add touch-specific styles */}
             {isExpanded && (
-              <div className="px-3 pb-3 text-sm bg-white">
+              <div 
+                className="px-3 pb-3 text-sm bg-white expanded-content"
+                onClick={(e) => e.stopPropagation()} // Prevent collapse when interacting with content
+              >
                 <div className="grid gap-2 text-gray-600">
                   <div>
                     <strong>Description:</strong>
@@ -434,19 +454,19 @@ export default function WorkflowBoard({ projectId }) {
                   )}
                 </div>
 
-                {/* View Details and Admin Action Buttons */}
-                <div className="flex justify-end mt-3">
+                {/* Action Buttons - Larger touch targets */}
+                <div className="flex justify-end mt-3 gap-4">
                   <button 
                     onClick={handleViewDetails}
-                    className="flex items-center text-blue-600 hover:underline mr-2"
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
                     aria-label="View Details"
                   >
-                    <FiEye className="text-xl" /> {/* Eye icon only */}
+                    <FiEye className="text-xl" />
                   </button>
                   {currentUser?.role === 'admin' && (
                     <button 
                       onClick={handleAdminAction}
-                      className="flex items-center text-gray-600 hover:underline mr-2"
+                      className="p-2 text-gray-600 hover:bg-gray-50 rounded-full"
                       aria-label="Admin Action"
                     >
                       <FiSettings className="text-xl" />
@@ -454,10 +474,10 @@ export default function WorkflowBoard({ projectId }) {
                   )}
                   <button 
                     onClick={handleDeleteTask}
-                    className="flex items-center text-red-600 hover:underline"
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-full"
                     aria-label="Delete Task"
                   >
-                    <FiTrash className="text-xl" /> {/* Trash icon for deletion */}
+                    <FiTrash className="text-xl" />
                   </button>
                 </div>
               </div>
@@ -501,9 +521,9 @@ export default function WorkflowBoard({ projectId }) {
   };
 
   return (
-    <div className="h-screen flex flex-col p-4 pt-16 bg-gray-50">
-      {/* Flow Chart */}
-      <div className="h-[300px] w-full mb-4 bg-white rounded-lg shadow-sm">
+    <div className="min-h-screen flex flex-col p-2 sm:p-4 pt-16 bg-gray-50">
+      {/* Flow Chart - Hide on mobile, show on larger screens */}
+      <div className="hidden md:block h-[300px] w-full mb-4 bg-white rounded-lg shadow-sm">
         <ReactFlow
           nodes={nodes.map(node => ({
             ...node,
@@ -524,11 +544,11 @@ export default function WorkflowBoard({ projectId }) {
         </ReactFlow>
       </div>
 
-      {/* Enhanced Filters Section - Now below flowchart */}
-      <div className="mb-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <div className="flex flex-wrap items-center gap-6">
+      {/* Enhanced Filters Section - Stack filters vertically on mobile */}
+      <div className="mb-4 sm:mb-6 bg-white p-3 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-6">
           {/* Stage Filter */}
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1 min-w-0 sm:min-w-[200px]">
             <div className="flex items-center gap-2 text-gray-600 mb-2">
               <FiLayers className="text-indigo-500" />
               <label className="text-sm font-medium">Stage</label>
@@ -555,7 +575,7 @@ export default function WorkflowBoard({ projectId }) {
           </div>
 
           {/* Status Filter */}
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1 min-w-0 sm:min-w-[200px]">
             <div className="flex items-center gap-2 text-gray-600 mb-2">
               <FiCheckSquare className="text-emerald-500" />
               <label className="text-sm font-medium">Status</label>
@@ -577,7 +597,7 @@ export default function WorkflowBoard({ projectId }) {
           </div>
 
           {/* Priority Filter */}
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1 min-w-0 sm:min-w-[200px]">
             <div className="flex items-center gap-2 text-gray-600 mb-2">
               <FiFlag className="text-amber-500" />
               <label className="text-sm font-medium">Priority</label>
@@ -600,7 +620,7 @@ export default function WorkflowBoard({ projectId }) {
           </div>
 
           {/* Enhanced Search Bar */}
-          <div className="flex-1 min-w-[300px]">
+          <div className="flex-1 min-w-0 sm:min-w-[300px]">
             <div className="flex items-center gap-2 text-gray-600 mb-2">
               <FiSearch className="text-blue-500" />
               <label className="text-sm font-medium">Search</label>
@@ -633,27 +653,31 @@ export default function WorkflowBoard({ projectId }) {
         />
       )}
 
-      {/* Kanban Board */}
+      {/* Kanban Board - Stack columns vertically on mobile */}
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex flex-1 gap-4">
+        <div className="flex flex-col md:flex-row flex-1 gap-4">
           {Object.entries(filterTasks(tasks)).map(([columnId, columnTasks]) => (
             <Droppable droppableId={columnId} key={columnId}>
               {(provided) => (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="flex-1 bg-white p-4 rounded-lg shadow-sm"
+                  className="flex-1 bg-white p-3 sm:p-4 rounded-lg shadow-sm"
                 >
-                  <div className="flex items-center justify-between mb-4">
+                  {/* Column Header - Add sticky positioning for mobile */}
+                  <div className="sticky top-0 z-10 bg-white pb-2 mb-2 border-b flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {columnId === 'todo' && <FiList className="text-blue-500 text-xl" />}
                       {columnId === 'inProgress' && <FiClock className="text-orange-500 text-xl" />}
                       {columnId === 'completed' && <FiCheckCircle className="text-green-500 text-xl" />}
-                      <h2 className="font-semibold">{columnId.charAt(0).toUpperCase() + columnId.slice(1)}</h2>
+                      <h2 className="font-semibold">
+                        {columnId.charAt(0).toUpperCase() + columnId.slice(1)}
+                        <span className="ml-2 text-sm text-gray-500">({columnTasks.length})</span>
+                      </h2>
                     </div>
                     {columnId === 'todo' && projectId && (
                       <button
-                        className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
                         onClick={() => setShowForm(true)}
                         title="Add new task"
                       >
@@ -661,9 +685,13 @@ export default function WorkflowBoard({ projectId }) {
                       </button>
                     )}
                   </div>
-                  {columnTasks.map((task, index) => (
-                    <TaskCard key={task.id} task={task} index={index} />
-                  ))}
+
+                  {/* Task Cards - Update for better mobile display */}
+                  <div className="space-y-2">
+                    {columnTasks.map((task, index) => (
+                      <TaskCard key={task.id} task={task} index={index} />
+                    ))}
+                  </div>
                   {provided.placeholder}
                 </div>
               )}

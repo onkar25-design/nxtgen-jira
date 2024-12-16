@@ -549,7 +549,7 @@ const handleRejectStaff = async (staffId) => {
         </div>
       )}
       {/* Table Wrapper for Horizontal Scrolling */}
-      <div className="table-wrapper">
+      <div className="table-wrapper hidden md:block">
         <table>
           <thead>
             <tr>
@@ -607,6 +607,72 @@ const handleRejectStaff = async (staffId) => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Cards View */}
+      <div className="mobile-staff-cards md:hidden">
+        {filteredStaffData.map((staff) => (
+          <div key={staff.id} className="staff-card">
+            <div className="staff-card-header">
+              <span className="staff-card-name">
+                {staff.first_name} {staff.last_name}
+              </span>
+              <span className={`badge badge-${staff.status ? staff.status.toLowerCase() : 'unknown'}`}>
+                {staff.status || 'Unknown'}
+              </span>
+            </div>
+            
+            <div className="staff-card-content">
+              <p>
+                <span>Email:</span>
+                <span>{staff.email}</span>
+              </p>
+              <p>
+                <span>Role:</span>
+                <span className={`badge badge-${staff.role ? staff.role.toLowerCase() : 'unknown'}`}>
+                  {staff.role || 'Unknown'}
+                </span>
+              </p>
+              {staff.designation && (
+                <p>
+                  <span>Designation:</span>
+                  <span>{staff.designation}</span>
+                </p>
+              )}
+            </div>
+
+            <div className="staff-card-actions">
+              <button 
+                className="manageStaff-action-button manageStaff-view-button" 
+                onClick={() => handleViewStaff(staff)}
+              >
+                <FiEye className="h-5 w-5" />
+              </button>
+              <button 
+                className="manageStaff-action-button manageStaff-edit-button" 
+                onClick={() => handleEditStaff(staff)}
+              >
+                <FiEdit className="h-5 w-5" />
+              </button>
+              {userRole === 'admin' && staff.status === 'Pending' && (
+                <>
+                  <button 
+                    className="manageStaff-action-button manageStaff-approve-button" 
+                    onClick={() => handleApproveStaff(staff.id)}
+                  >
+                    <FiCheck className="h-5 w-5" />
+                  </button>
+                  <button 
+                    className="manageStaff-action-button manageStaff-reject-button" 
+                    onClick={() => handleRejectStaff(staff.id)}
+                  >
+                    <FiX className="h-5 w-5" />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
