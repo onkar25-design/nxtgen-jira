@@ -465,7 +465,7 @@ const TasksPage = () => {
             <button className="filter-btn">
               <Filter className="h-4 w-4" />
               <select 
-                className="bg-transparent border-none outline-none"
+                className="filter-select"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -486,9 +486,9 @@ const TasksPage = () => {
                 onChange={(e) => setPriorityFilter(e.target.value)}
               >
                 <option value="all">All Priorities</option>
-                <option value="high">High Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="low">Low Priority</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
               </select>
             </button>
           </div>

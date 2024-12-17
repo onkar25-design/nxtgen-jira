@@ -254,13 +254,17 @@ export default function ProjectTimeline() {
 
             {/* Project Filter */}
             <Select value={selectedProject} onValueChange={setSelectedProject}>
-              <SelectTrigger className="w-[150px] !bg-white border-gray-200 shadow-sm">
-                <SelectValue placeholder="Project" />
+              <SelectTrigger className="w-[200px] !bg-white border-gray-200 shadow-sm">
+                <SelectValue placeholder="Project" className="truncate max-w-[180px]" />
               </SelectTrigger>
-              <SelectContent className="!bg-white border border-gray-200">
+              <SelectContent className="!bg-white border border-gray-200 max-w-[200px]">
                 <SelectItem value="all">All Projects</SelectItem>
                 {projects.map(project => (
-                  <SelectItem key={project.projectId} value={project.projectId}>
+                  <SelectItem 
+                    key={project.projectId} 
+                    value={project.projectId}
+                    className="truncate max-w-[180px]"
+                  >
                     {project.projectName}
                   </SelectItem>
                 ))}
