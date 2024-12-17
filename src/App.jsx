@@ -105,6 +105,7 @@ function App() {
       sidebarOpen={sidebarOpen} 
       setSidebarOpen={setSidebarOpen} 
       setCurrentPage={setCurrentPage}
+      setSelectedProjectId={setSelectedProjectId}
       userName={userName}
       userRole={userRole}
     >

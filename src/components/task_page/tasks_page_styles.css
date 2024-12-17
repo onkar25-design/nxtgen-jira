@@ -10,7 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .add-task-btn {
@@ -184,11 +184,13 @@
 }
 
 .table-container {
-  overflow-x: auto;
+  width: 100%;
 }
 
 .tasks-table {
   width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .tasks-table th {
@@ -204,42 +206,47 @@
 }
 
 .task-info {
-  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .task-title {
+  color: #1a73e8;
   font-weight: 500;
-  color: #1d4ed8; /* Blue-700 */
 }
 
 .task-project {
-  font-size: 0.875rem; /* Adjust as needed */
-  color: #6b7280; /* Gray-500 */
+  color: #5f6368;
+  font-size: 0.875rem;
 }
 
 .status-badge {
+  display: inline-flex;
+  align-items: center;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
 }
 
-.status-badge.todo {
-  background-color: #3b82f6; /* Blue-500 */
-  color: white;
+.status-badge.requirement {
+  background-color: #DBEAFE;
+  color: #1E40AF;
 }
 
-.status-badge.in-progress {
-  background-color: #f59e0b; /* Amber-500 */
-  color: white;
+.status-badge.design,
+.status-badge.coding,
+.status-badge.review,
+.status-badge.testing {
+  background-color: #FEF3C7;
+  color: #92400E;
 }
 
+.status-badge.documentation,
 .status-badge.completed {
-  background-color: #10b981; /* Emerald-500 */
-  color: white;
+  background-color: #D1FAE5;
+  color: #065F46;
 }
 
 .priority-badge {
@@ -253,17 +260,17 @@
 }
 
 .priority-badge.high {
-  background-color: #ef4444; /* Red-500 */
+  background-color: #ef4444;
   color: white;
 }
 
 .priority-badge.medium {
-  background-color: #f59e0b; /* Amber-500 */
+  background-color: #f59e0b;
   color: white;
 }
 
 .priority-badge.low {
-  background-color: #10b981; /* Emerald-500 */
+  background-color: #10b981;
   color: white;
 }
 
@@ -420,4 +427,146 @@
 
 .icon-button:hover {
   background-color: #f3f4f6;
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 768px) {
+  .tasks-container {
+    padding: 0.5rem;
+    margin-top: 3rem;
+  }
+
+  /* Convert table to cards for mobile */
+  .table-container {
+    overflow-x: hidden;
+  }
+
+  .tasks-table {
+    display: none; /* Hide the table on mobile */
+  }
+
+  /* Mobile card view */
+  .mobile-task-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  .task-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+  }
+
+  .task-card-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .task-card-title {
+    color: #1a73e8;
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .task-card-project {
+    color: #5f6368;
+    font-size: 0.875rem;
+  }
+
+  .task-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .task-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .task-card-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    min-width: 80px;
+  }
+
+  /* Adjust badge sizes for mobile */
+  .status-badge,
+  .priority-badge {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    min-width: auto;
+  }
+
+  /* Mobile actions menu */
+  .mobile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .mobile-action-button {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    color: #6b7280;
+  }
+
+  /* Adjust search and filter section for mobile */
+  .search-filter {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .filter-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Add these styles for the create button */
+.tasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  background: white;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: #f3f4f6;
+  transform: scale(1.05);
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 768px) {
+  .tasks-header {
+    padding: 0 1rem;
+  }
+  
+  .icon-button {
+    padding: 0.375rem;
+  }
 }

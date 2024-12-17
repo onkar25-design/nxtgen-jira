@@ -1,25 +1,50 @@
 .sidebar {
-  background-color: #1e3a8a; /* Tailwind's bg-blue-900 */
+  background-color: #1e3a8a;
   color: white;
-  height: 100vh; /* Full height of the viewport */
-  position: fixed; /* Keep it fixed */
-  top: 0; /* Align to the top */
-  left: 0; /* Align to the left */
-  z-index: 50; /* Ensure it stays above other content */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
 }
 
 .sidebar-header {
   padding: 1rem;
-  border-bottom: 1px solid #1e40af; /* Tailwind's border-blue-800 */
+  border-bottom: 1px solid #1e40af;
+  background-color: rgba(30, 58, 138, 0.95);
 }
 
 .sidebar-button {
   width: 100%;
-  justify-content: flex-start;
-  color: white;
-  transition: background-color 0.3s ease;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s ease;
 }
 
 .sidebar-button:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Lighten on hover */
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Add smooth transitions */
+.sidebar-button, 
+.sidebar-button * {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Style the nested items */
+.sidebar nav > div {
+  position: relative;
+}
+
+/* Add subtle hover effect */
+.sidebar-button:hover {
+  transform: translateX(2px);
+}
+
+/* Style the active state */
+.sidebar-button[data-state="active"] {
+  background-color: rgba(59, 130, 246, 0.2);
+  font-weight: 500;
 }

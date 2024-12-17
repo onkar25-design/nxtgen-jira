@@ -41,21 +41,68 @@ export default function Header({ sidebarOpen, setSidebarOpen, setCurrentPage }) 
     };
   }, []);
 
+  // Add auth state change listener
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session) {
+        // Handle logout from other tabs
+        handleLogoutCleanup();
+      }
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
+
+  // Separate cleanup function
+  const handleLogoutCleanup = () => {
+    localStorage.clear();
+    setUserName('');
+    setUserInitials('');
+    setShowDropdown(false);
+    navigate('/login', { replace: true });
+  };
+
   const handleLogout = async () => {
     try {
+      // First check if we have a session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // If no session exists, just clean up and redirect
+        handleLogoutCleanup();
+        return;
+      }
+
+      // Proceed with logout if we have a session
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
       
-      // Clear any stored user data
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userRole');
+      if (error) {
+        console.warn('Logout API call failed:', error.message);
+      }
       
-      // Navigate to login page
-      navigate('/login');
+      // Clean up regardless of API success
+      handleLogoutCleanup();
+      
     } catch (error) {
-      console.error('Error logging out:', error.message);
+      console.error('Error during logout:', error.message);
+      // Fallback: clean up even if everything fails
+      handleLogoutCleanup();
     }
   };
+
+  // Add a keyboard shortcut for logout (optional)
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Escape' && showDropdown) {
+        setShowDropdown(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [showDropdown]);
 
   return (
     <header className="bg-white shadow-md border-b border-blue-100 fixed top-0 right-0 left-0 md:left-64 z-40">
