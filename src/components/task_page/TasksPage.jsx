@@ -106,11 +106,43 @@ const TasksPage = () => {
   const [projectId] = useState('default-project-id'); // Move this up with other state declarations
   const [viewingTask, setViewingTask] = useState(null);
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   // useEffect hook after all useState hooks
   useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // Fetch the user's profile information from your users table
+        const { data: userProfile, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && userProfile) {
+          // Make sure to get the user's full name or display name
+          setCurrentUser({
+            ...userProfile,
+            fullName: `${userProfile.first_name} ${userProfile.last_name}`.trim() // Adjust according to your user table structure
+          });
+        }
+      }
+    };
+
+    getCurrentUser();
+  }, []);
+
+  useEffect(() => {
     const fetchTasks = async () => {
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          throw new Error('No user logged in');
+        }
+
+        // Fetch all tasks first
         const { data, error } = await supabase
           .from('tasks')
           .select(`
@@ -124,10 +156,16 @@ const TasksPage = () => {
           throw error;
         }
 
-        const transformedTasks = data.map(task => ({
+        // Filter tasks where current user's name is in the assigned_to array
+        const userTasks = data.filter(task => 
+          Array.isArray(task.assigned_to) && 
+          task.assigned_to.includes(currentUser?.fullName)
+        );
+
+        const transformedTasks = userTasks.map(task => ({
           id: task.id,
           title: task.title || task.content,
-          project: task.projects?.name || 'No Project', // Get project name from joined data
+          project: task.projects?.name || 'No Project',
           deadline: task.due_date,
           status: task.stage || 'requirement',
           priority: task.priority || 'medium',
@@ -143,8 +181,11 @@ const TasksPage = () => {
       }
     };
 
-    fetchTasks();
-  }, []);
+    // Only fetch tasks if we have the current user
+    if (currentUser?.fullName) {
+      fetchTasks();
+    }
+  }, [currentUser]); // Add currentUser as a dependency
 
   // Add filter function
   const getFilteredTasks = () => {
@@ -262,16 +303,19 @@ const TasksPage = () => {
 
   // Add handler for task creation
   const handleTaskCreated = (newTask) => {
-    const transformedTask = {
-      id: newTask.id,
-      title: newTask.title,
-      project: newTask.project_name,
-      deadline: newTask.due_date,
-      status: newTask.stage || 'requirement',
-      priority: newTask.priority,
-      assignee: newTask.assigned_to
-    };
-    setTasks(prevTasks => [...prevTasks, transformedTask]);
+    // Only add the task to the list if it's assigned to the current user
+    if (Array.isArray(newTask.assigned_to) && newTask.assigned_to.includes(currentUser?.fullName)) {
+      const transformedTask = {
+        id: newTask.id,
+        title: newTask.title,
+        project: newTask.project_name,
+        deadline: newTask.due_date,
+        status: newTask.stage || 'requirement',
+        priority: newTask.priority,
+        assignee: newTask.assigned_to
+      };
+      setTasks(prevTasks => [...prevTasks, transformedTask]);
+    }
   };
 
   // Add loading state

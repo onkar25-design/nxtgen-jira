@@ -50,6 +50,19 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, setCurrentPage, s
       
       <ScrollArea className="flex-grow">
         <nav className="p-2">
+          <div className="mb-2">
+            <Button 
+              variant="ghost" 
+              className="sidebar-button hover:text-blue-200 hover:bg-blue-800/50 w-full justify-start"
+              onClick={() => setCurrentPage('dashboard')}
+            >
+              <div className="flex items-center">
+                <Home className="mr-2 h-4 w-4" />
+                <span className="font-medium">Dashboard</span>
+              </div>
+            </Button>
+          </div>
+
           {/* Projects Section */}
           <div className="mb-2">
             <Button 

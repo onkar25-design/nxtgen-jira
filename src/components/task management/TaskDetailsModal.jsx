@@ -106,9 +106,9 @@ const TaskDetailsModal = ({ task, onClose }) => {
             </button>
           </div>
 
-          <div className="flex h-[calc(80vh-4rem)] overflow-hidden">
+          <div className="flex flex-col md:flex-row h-[calc(80vh-4rem)] overflow-hidden">
             {/* Left Side - Task Details */}
-            <div className="w-1/2 p-6 overflow-y-auto border-r">
+            <div className="w-full md:w-1/2 p-6 overflow-y-auto border-b md:border-r md:border-b-0">
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Description</h3>
@@ -186,7 +186,7 @@ const TaskDetailsModal = ({ task, onClose }) => {
             </div>
 
             {/* Right Side - Workflow Progress */}
-            <div className="w-1/2 p-6 bg-gray-50 overflow-y-auto">
+            <div className="w-full md:w-1/2 p-6 bg-gray-50 overflow-y-auto">
               <h3 className="text-lg font-semibold mb-6">Workflow Progress</h3>
               <div className="space-y-4">
                 {workflowStages.map((stage, index) => {
